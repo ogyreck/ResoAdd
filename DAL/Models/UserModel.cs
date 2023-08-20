@@ -4,7 +4,9 @@ namespace ResoAdd.DAL.Models
 {
     public class UserModel
     {
-
+        /// <summary>
+        /// Создание модели Юзера для базы данных
+        /// </summary>
         [Key]
         public int? UserId { get; set; }
         public string Email { get; set; } = null!;

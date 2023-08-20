@@ -1,6 +1,6 @@
 ﻿using ResoAdd.DAL.Models;
 
-namespace ResoAdd.DAL.Auth
+namespace ResoAdd.DAL
 {
     public interface IAuthDAL
     {

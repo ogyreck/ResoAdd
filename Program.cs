@@ -3,6 +3,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSingleton<ResoAdd.BL.Auth.IAuthBL, ResoAdd.BL.Auth.AuthBL>();
+builder.Services.AddSingleton<ResoAdd.DAL.IAuthDAL, ResoAdd.DAL.AuthDAL>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -2,6 +2,6 @@
 {
     public class DbHelpper
     {
-        public static string ConnString = "Host=localhost;Username=postgresql;Password=password;Database=test";
+        public static string ConnString = "User ID=postgres;Password=password;Host=localhost;Port=5432;Database=test";
     }
 }
