@@ -20,11 +20,11 @@ namespace ResoAdd.DAL
         {
             using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 return await connection.QueryFirstOrDefaultAsync<UserModel>(@"
                         SELECT UserID, Email,Password,Salt, Status 
-                        FORM AppUser 
+                        from AppUser 
                         where Email = @email", new { email = email }) ?? new UserModel();
             }
         }
@@ -37,7 +37,7 @@ namespace ResoAdd.DAL
         {
             using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 return await connection.QueryFirstOrDefaultAsync<UserModel>(@"
                         SELECT UserID, Email,Password,Salt, Status 
@@ -55,12 +55,13 @@ namespace ResoAdd.DAL
 		{
             using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
             {
-                connection.Open();
+                await connection.OpenAsync();
 
                 string sql = @"insert into AppUser(Email,Password,Salt, Status)
-                                    values(@Email, @Password, @Salt, @Status)";
+                                    values(@Email, @Password, @Salt, @Status) RETURNING userid";
 
-                var res = await connection.ExecuteAsync(sql, userModel);
+
+                var res = await connection.QuerySingleAsync<int>(sql, userModel);
 
                 return res;
 

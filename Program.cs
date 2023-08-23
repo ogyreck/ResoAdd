@@ -1,10 +1,19 @@
+using ResoAdd.BL.Auth;
+using ResoAdd.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<ResoAdd.BL.Auth.IAuthBL, ResoAdd.BL.Auth.AuthBL>();
-builder.Services.AddSingleton<ResoAdd.DAL.IAuthDAL, ResoAdd.DAL.AuthDAL>();
+builder.Services.AddSingleton<IAuthBL, AuthBL>();
+builder.Services.AddSingleton<IEncrypt, Encrypt>();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddSingleton<IAuthDAL, AuthDAL>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddMvc().AddSessionStateTempDataProvider();
+builder.Services.AddSession();
 
 
 var app = builder.Build();
@@ -21,6 +30,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 

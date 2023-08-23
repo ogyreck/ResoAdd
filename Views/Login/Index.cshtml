@@ -1,0 +1,24 @@
+﻿@model LoginViewModel
+
+@{
+	ViewData["Title"] = "Авторизация";
+
+}
+
+<div>
+	<form action="/login" method="post">
+		<p>
+			<label>Email</label>
+			<input name="Email" value="@Model.Email" />
+		</p>
+		<p>
+			<label>Пароль</label>
+			<input name="Password" type="password" />
+		</p>
+		<p>
+			<label>Запомнить тебя</label>
+			<input name="RememberMe" type="checkbox" />
+		</p>
+		<button>Войти</button>
+	</form>
+</div>

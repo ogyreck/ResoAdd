@@ -1,4 +1,5 @@
 ﻿ using Microsoft.AspNetCore.Mvc;
+using ResoAdd.BL.Auth;
 using ResoAdd.Models;
 using System.Diagnostics;
 
@@ -7,15 +8,17 @@ namespace ResoAdd.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICurrentUser _currentUser;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICurrentUser currentUser)
         {
             _logger = logger;
+            _currentUser = currentUser;
         }
 
         public IActionResult Index()
         {
-            return View();
+            return View(_currentUser.ISLoggedIn());
         }
 
         public IActionResult Privacy()
