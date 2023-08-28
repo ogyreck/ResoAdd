@@ -2,6 +2,7 @@
 using ResoAdd.DAL;
 using Microsoft.AspNetCore.Http;
 using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
 
 namespace ResoAdd.BL.Auth
 {
@@ -55,5 +56,16 @@ namespace ResoAdd.BL.Auth
             _httpContextAccessor.HttpContext?.Session.SetInt32(AuthConstant.AUTH_SESSION_PARAM_KEY, id);
 
 		}
+
+        public async Task<ValidationResult?> ValidateEmail(string email)
+        {
+            var user = await _authDAL.GetUser(email);
+
+            if(user.UserId != null)
+            {
+                return new ValidationResult("Email уже существует");
+            }
+            return null;
+        }
     }
 }

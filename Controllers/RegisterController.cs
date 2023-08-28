@@ -28,10 +28,21 @@ namespace ResoAdd.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _authBL.CreateUser(AuthMapper.MapRegisterViewModelToUserModel(model));
-                return Redirect("/");
+                bool isValid = true;
+                var errorModel = await _authBL.ValidateEmail(model.Email ?? "");
+                 if (errorModel != null)
+                {
+                    ModelState.TryAddModelError("Email", errorModel.ErrorMessage!);
+                }
+
             }
-            return View("Index", model);
+
+			if (ModelState.IsValid)
+			{
+				await _authBL.CreateUser(AuthMapper.MapRegisterViewModelToUserModel(model));
+				return Redirect("/");
+			}
+			return View("Index", model);
         }
     }
 }

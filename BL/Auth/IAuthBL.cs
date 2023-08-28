@@ -1,4 +1,5 @@
 ﻿ using ResoAdd.DAL.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace ResoAdd.BL.Auth
 {
@@ -7,5 +8,7 @@ namespace ResoAdd.BL.Auth
         Task<int> CreateUser(UserModel userModel);
 
         Task<int> Authenticate(string email, string password, bool rememberMe);
-    }
+        Task<ValidationResult?> ValidateEmail(string email);
+
+	}
 }
