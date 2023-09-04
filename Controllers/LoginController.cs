@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ResoAdd.BL.Auth;
+using ResoAdd.BL.Execptions;
 using ResoAdd.ViewModels;
 
 namespace ResoAdd.Controllers
@@ -25,8 +26,16 @@ namespace ResoAdd.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _authBL.Authenticate(model.Email!, model.Password!, model.RememberMe == true);
-                return Redirect("/");
+                try { 
+                    await _authBL.Authenticate(model.Email!, model.Password!, model.RememberMe == true);
+					return Redirect("/");
+				}
+                catch (AuthorizationException)
+                {
+                    ModelState.AddModelError("Email", "Имя или Email неверный");
+                }
+
+					
             }
             return View("Index", model);
         }

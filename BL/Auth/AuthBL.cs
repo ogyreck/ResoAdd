@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 
+using ResoAdd.BL.Execptions;
+
 namespace ResoAdd.BL.Auth
 {
     /// <summary>
@@ -28,14 +30,16 @@ namespace ResoAdd.BL.Auth
 		public async Task<int> Authenticate(string email, string password, bool rememberMe)
 		{
 			UserModel user = await _authDAL.GetUser(email);
-            string encriptPass = _encrypt.HashPassword(password, user.Salt);
-
-            if(user.Password == encriptPass)
+            if(user.UserId == null)
+            {
+				throw new AuthorizationException();
+			}
+            if(user.Password == _encrypt.HashPassword(password, user.Salt))
             {
                 Login(user.UserId?? 0);
                 return user.UserId ?? 0;
             }
-            return 0;
+            throw new AuthorizationException();
 		}
 
 		/// <summary>
