@@ -6,14 +6,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<IAuthBL, AuthBL>();
+builder.Services.AddScoped<IAuthBL, AuthBL>();
 builder.Services.AddSingleton<IEncrypt, Encrypt>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddSingleton<IAuthDAL, AuthDAL>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IDbSessionDAL,DbSessionDAL>();
+builder.Services.AddScoped<IDbSession, DbSession>();
 
-builder.Services.AddMvc().AddSessionStateTempDataProvider();
-builder.Services.AddSession();
+
+builder.Services.AddMvc();
 
 
 var app = builder.Build();
@@ -30,7 +32,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseSession();
+
 
 app.UseAuthorization();
 

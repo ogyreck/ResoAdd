@@ -2,6 +2,6 @@
 {
 	public interface ICurrentUser
 	{
-		bool ISLoggedIn();
+		Task<bool> ISLoggedIn();
 	}
 }

@@ -1,0 +1,28 @@
+﻿@model ProfileViewModel
+
+@{
+	ViewData["Title"] = "Профиль";
+
+}
+
+<div>
+	<form action="/profile" method="post" enctype="multipart/form-data">
+		<p>
+			<label>Никнейм</label>
+			<input name="ProfileName" type="text" value="@Model.ProfileName" />
+			
+		</p>
+		<p>
+			<label>Имя</label>
+			<input name="FirstName" type="text"  value="@Model.FirstName" />
+		</p>
+		<p>
+			<label>Фамилия</label>
+			<input name="LastName" type="text" value="@Model.LastName" />
+		</p>
+		<p>
+			<input type="file" name="file"/>
+		</p>
+		<button>Сохранить</button>
+	</form>
+</div>

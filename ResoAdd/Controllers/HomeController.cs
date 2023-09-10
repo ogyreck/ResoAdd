@@ -16,9 +16,11 @@ namespace ResoAdd.Controllers
             _currentUser = currentUser;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_currentUser.ISLoggedIn());
+            bool currentUserIsLoggedIn = await _currentUser.ISLoggedIn();
+
+			return View(currentUserIsLoggedIn);
         }
 
         public IActionResult Privacy()

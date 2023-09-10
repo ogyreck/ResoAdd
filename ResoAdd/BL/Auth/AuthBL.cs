@@ -19,11 +19,13 @@ namespace ResoAdd.BL.Auth
         private readonly IAuthDAL _authDAL;
         private readonly IEncrypt _encrypt;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public AuthBL(IAuthDAL authDAL, IEncrypt encrypt, IHttpContextAccessor httpContextAccessor)
+        private readonly IDbSession _dbSession;
+        public AuthBL(IAuthDAL authDAL, IEncrypt encrypt, IHttpContextAccessor httpContextAccessor, IDbSession dbSession)
         {
             _authDAL = authDAL;
 			_encrypt = encrypt;
 			_httpContextAccessor = httpContextAccessor;
+            _dbSession = dbSession;
 
 		}
 
@@ -36,7 +38,7 @@ namespace ResoAdd.BL.Auth
 			}
             if(user.Password == _encrypt.HashPassword(password, user.Salt))
             {
-                Login(user.UserId?? 0);
+                await Login(user.UserId?? 0);
                 return user.UserId ?? 0;
             }
             throw new AuthorizationException();
@@ -52,12 +54,12 @@ namespace ResoAdd.BL.Auth
             userModel.Salt = Guid.NewGuid().ToString();
             userModel.Password = _encrypt.HashPassword(userModel.Password, userModel.Salt);
             int id =  await _authDAL.CreateUser(userModel);
-            Login(id);
+            await Login(id);
             return id;
         }
-        public void Login(int id)
+        public async Task Login(int id)
         {
-            _httpContextAccessor.HttpContext?.Session.SetInt32(AuthConstant.AUTH_SESSION_PARAM_KEY, id);
+            await _dbSession.SetUserId(id);
 
 		}
 

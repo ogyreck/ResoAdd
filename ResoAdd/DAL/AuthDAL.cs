@@ -41,7 +41,7 @@ namespace ResoAdd.DAL
 
                 return await connection.QueryFirstOrDefaultAsync<UserModel>(@"
                         SELECT UserID, Email,Password,Salt, Status 
-                        FORM AppUser 
+                        From AppUser 
                         where UserId = @id", new { id = id }) ?? new UserModel();
             }
         }
