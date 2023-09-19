@@ -1,4 +1,5 @@
 using ResoAdd.BL.Auth;
+using ResoAdd.BL.Execptions;
 using ResoAdd.DAL;
 using ResoAdd.DAL.Models;
 using ResoTest.Helpers;
@@ -21,8 +22,8 @@ namespace ResoTest
 				string email = Guid.NewGuid().ToString() + "@test.com";
 
 				// validate: should not be in the DB
-				var emailValidationResult = await _authBL.ValidateEmail(email);
-				Assert.IsNull(emailValidationResult);
+				_authBL.ValidateEmail(email).GetAwaiter().GetResult();
+				
 
 				// create user
 				int userId = await _authBL.CreateUser(
@@ -42,9 +43,8 @@ namespace ResoTest
 				Assert.That(email, Is.EqualTo(userbyemaildalresult.Email));
 
 				// validate: should be in the DB
-				emailValidationResult = await _authBL.ValidateEmail(email);
-				Assert.IsNotNull(emailValidationResult);
-
+				Assert.Throws<DublicatEmailException>(delegate { _authBL.ValidateEmail(email).GetAwaiter().GetResult(); });
+			
 				string encpassword = _encrypt.HashPassword("qwer1234", userbyemaildalresult.Salt);
 				Assert.That(encpassword, Is.EqualTo(userbyemaildalresult.Password));
 			}

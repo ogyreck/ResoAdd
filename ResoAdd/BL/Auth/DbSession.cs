@@ -35,7 +35,7 @@ namespace ResoAdd.BL.Auth
 				Created = DateTime.Now,
 				LastAccessed = DateTime.Now
 			};
-			await _sessionDAL.CreateSession(data);
+			await _sessionDAL.Create(data);
 			return data;
 		}
 
@@ -52,7 +52,7 @@ namespace ResoAdd.BL.Auth
 			else
 				sessionId = Guid.NewGuid();
 
-			var data = await _sessionDAL.GetSession(sessionId);
+			var data = await _sessionDAL.Get(sessionId);
 			if (data == null)
 			{
 				data = await this.CreateSession();
@@ -80,7 +80,13 @@ namespace ResoAdd.BL.Auth
 			data.UserId = userId;
 			data.DbSessionId = Guid.NewGuid();
 			CreateSectionCookie(data.DbSessionId);
-			return await _sessionDAL.CreateSession(data);
+			return await _sessionDAL.Create(data);
+		}
+
+		public async Task Lock()
+		{
+			var data = await GetSession();
+			await _sessionDAL.Lock(data.DbSessionId);
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace ResoAdd.DAL
 {
 	public class DbSessionDAL : IDbSessionDAL
 	{
-		public async Task<int> CreateSession(SessionModel model)
+		public async Task<int> Create(SessionModel model)
 		{
 			using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
 			{
@@ -18,7 +18,7 @@ namespace ResoAdd.DAL
 			}
 		}
 
-		public async Task<SessionModel?> GetSession(Guid sessionId)
+		public async Task<SessionModel?> Get(Guid sessionId)
 		{
 			using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
 			{
@@ -29,8 +29,18 @@ namespace ResoAdd.DAL
 				return sessions.FirstOrDefault();
 			}
 		}
+		public async Task Lock(Guid sessionId)
+		{
+			using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
+			{
+				await connection.OpenAsync();
+				string sql = @"select DbSessionID from DbSession where DbSessionID = @sessionId for update";
 
-		public async Task<int> UpdateSession(SessionModel session)
+				await connection.QueryAsync<SessionModel>(sql, new { sessionId = sessionId });
+				
+			}
+		}
+		public async Task<int> Update(SessionModel session)
 		{
 			using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
 			{

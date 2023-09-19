@@ -14,12 +14,12 @@ namespace ResoTest.Helpers
 		protected IHttpContextAccessor _httpContextAccessor = new HttpContextAccessor();
 		protected IDbSessionDAL _dbSessionDAL = new DbSessionDAL();
 		protected IDbSession _dbSession;
-		protected IAuthBL _authBL;
+		protected IAuth _authBL;
 		
 
 		public BaseTest() {
 			_dbSession = new DbSession(_dbSessionDAL, _httpContextAccessor);
-			_authBL = new AuthBL(_authDAL, _encrypt, _httpContextAccessor, _dbSession);
+			_authBL = new Auth(_authDAL, _encrypt, _httpContextAccessor, _dbSession);
 			
 
 		}

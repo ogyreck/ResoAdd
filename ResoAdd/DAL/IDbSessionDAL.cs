@@ -4,8 +4,9 @@ namespace ResoAdd.DAL
 {
 	public interface IDbSessionDAL
 	{
-		Task<SessionModel?> GetSession(Guid sessionID);
-		Task<int> UpdateSession(SessionModel session);
-		Task<int> CreateSession(SessionModel session);
+		Task<SessionModel?> Get(Guid sessionID);
+		Task<int> Update(SessionModel session);
+		Task<int> Create(SessionModel session);
+		Task Lock(Guid sessionId);
 	}
 }

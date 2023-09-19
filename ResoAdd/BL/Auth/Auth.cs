@@ -5,13 +5,14 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 
 using ResoAdd.BL.Execptions;
+using ResoAdd.BL.General;
 
 namespace ResoAdd.BL.Auth
 {
     /// <summary>
     /// Реализация BL уровня
     /// </summary>
-    public class AuthBL : IAuthBL
+    public class Auth : IAuth
     {
         /// <summary>
         /// Зависимость от authDAL
@@ -20,7 +21,7 @@ namespace ResoAdd.BL.Auth
         private readonly IEncrypt _encrypt;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDbSession _dbSession;
-        public AuthBL(IAuthDAL authDAL, IEncrypt encrypt, IHttpContextAccessor httpContextAccessor, IDbSession dbSession)
+        public Auth(IAuthDAL authDAL, IEncrypt encrypt, IHttpContextAccessor httpContextAccessor, IDbSession dbSession)
         {
             _authDAL = authDAL;
 			_encrypt = encrypt;
@@ -63,15 +64,28 @@ namespace ResoAdd.BL.Auth
 
 		}
 
-        public async Task<ValidationResult?> ValidateEmail(string email)
+        public async Task ValidateEmail(string email)
         {
             var user = await _authDAL.GetUser(email);
 
             if(user.UserId != null)
             {
-                return new ValidationResult("Email уже существует");
+                throw new DublicatEmailException();
             }
-            return null;
+           
         }
-    }
+
+		public async Task Register(UserModel userModel)
+		{
+            using (var scope = Helpers.CreateTransactionScope())
+            {
+                await _dbSession.Lock();
+				await ValidateEmail(userModel.Email);
+				await CreateUser(userModel);
+                scope.Complete();
+			}
+
+		}
+            
+	}
 }

@@ -7,8 +7,8 @@ namespace ResoAdd.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IAuthBL _authBL;
-        public LoginController(IAuthBL authBL)
+        private readonly IAuth _authBL;
+        public LoginController(IAuth authBL)
         {
             _authBL = authBL;
         }
