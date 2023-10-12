@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 using ResoAdd.BL.Execptions;
 using ResoAdd.BL.General;
+using Microsoft.AspNetCore.Authentication.OAuth;
 
 namespace ResoAdd.BL.Auth
 {
@@ -21,31 +22,45 @@ namespace ResoAdd.BL.Auth
         private readonly IEncrypt _encrypt;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDbSession _dbSession;
-        public Auth(IAuthDAL authDAL, IEncrypt encrypt, IHttpContextAccessor httpContextAccessor, IDbSession dbSession)
+        private readonly IUserTokenDAL _userTokenDAL;
+        private readonly IWebCookie _webCookie;
+        public Auth(IAuthDAL authDAL, 
+            IEncrypt encrypt, 
+            IHttpContextAccessor httpContextAccessor, 
+            IDbSession dbSession, 
+            IUserTokenDAL userTokenDAL,
+			IWebCookie webCookie
+
+			)
         {
             _authDAL = authDAL;
 			_encrypt = encrypt;
 			_httpContextAccessor = httpContextAccessor;
             _dbSession = dbSession;
-
+            _userTokenDAL = userTokenDAL;
+            _webCookie = webCookie;
 		}
 
 		public async Task<int> Authenticate(string email, string password, bool rememberMe)
 		{
-			UserModel user = await _authDAL.GetUser(email);
-            if(user.UserId == null)
-            {
-				throw new AuthorizationException();
+			var user = await _authDAL.GetUser(email);
+
+			if (user.UserId != null && user.Password == _encrypt.HashPassword(password, user.Salt))
+			{
+				await Login(user.UserId ?? 0);
+
+				if (rememberMe)
+				{
+					Guid tokenId = await _userTokenDAL.Create(user.UserId ?? 0);
+					_webCookie.AddSecure(AuthConstant.RememberMeCookieName, tokenId.ToString(), 30);
+				}
+
+				return user.UserId ?? 0;
 			}
-            if(user.Password == _encrypt.HashPassword(password, user.Salt))
-            {
-                await Login(user.UserId?? 0);
-                return user.UserId ?? 0;
-            }
-            throw new AuthorizationException();
+			throw new AuthorizationException();
 		}
 
-		/// <summary>
+		/// <summary> 
 		///  Создание юзера на уровне BL
 		/// </summary>
 		/// <param name="userModel"></param>
@@ -58,7 +73,7 @@ namespace ResoAdd.BL.Auth
             await Login(id);
             return id;
         }
-        public async Task Login(int id)
+		public async Task Login(int id)
         {
             await _dbSession.SetUserId(id);
 

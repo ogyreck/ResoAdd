@@ -1,7 +1,10 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using ResoAdd.BL.Auth;
+using ResoAdd.BL.General;
 using ResoAdd.DAL;
+using Resutest.Helpers;
 
 namespace ResoTest.Helpers
 {
@@ -15,11 +18,14 @@ namespace ResoTest.Helpers
 		protected IDbSessionDAL _dbSessionDAL = new DbSessionDAL();
 		protected IDbSession _dbSession;
 		protected IAuth _authBL;
-		
+		protected IWebCookie webCookie;
+		protected IUserTokenDAL _userTokenDAL = new UserTokenDAL();
+
 
 		public BaseTest() {
-			_dbSession = new DbSession(_dbSessionDAL, _httpContextAccessor);
-			_authBL = new Auth(_authDAL, _encrypt, _httpContextAccessor, _dbSession);
+			webCookie = new TestCookie();
+			_dbSession = new DbSession(_dbSessionDAL, webCookie);
+			_authBL = new Auth(_authDAL, _encrypt, _httpContextAccessor, _dbSession,_userTokenDAL,webCookie);
 			
 
 		}

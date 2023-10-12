@@ -1,4 +1,5 @@
 using ResoAdd.BL.Auth;
+using ResoAdd.BL.General;
 using ResoAdd.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,8 @@ builder.Services.AddSingleton<IAuthDAL, AuthDAL>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IDbSessionDAL,DbSessionDAL>();
 builder.Services.AddScoped<IDbSession, DbSession>();
-
+builder.Services.AddScoped<IWebCookie,WebCookie>();
+builder.Services.AddSingleton<IUserTokenDAL, UserTokenDAL>();
 
 builder.Services.AddMvc();
 

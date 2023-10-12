@@ -18,15 +18,11 @@ namespace ResoAdd.DAL
         /// <returns></returns>
         public async Task<UserModel> GetUser(string email)
         {
-            using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
-            {
-                await connection.OpenAsync();
-
-                return await connection.QueryFirstOrDefaultAsync<UserModel>(@"
+			var result = await DbHelpper.QueryAsync<UserModel>(@"
                         SELECT UserID, Email,Password,Salt, Status 
-                        from AppUser 
-                        where Email = @email", new { email = email }) ?? new UserModel();
-            }
+                        From AppUser 
+                         where Email = @email", new { email = email });
+			return result.FirstOrDefault() ?? new UserModel();
         }
         /// <summary>
         /// Получения юзера по id из бд
@@ -35,15 +31,12 @@ namespace ResoAdd.DAL
         /// <returns></returns>
         public async Task<UserModel> GetUser(int id)
         {
-            using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
-            {
-                await connection.OpenAsync();
-
-                return await connection.QueryFirstOrDefaultAsync<UserModel>(@"
+            var result = await DbHelpper.QueryAsync<UserModel>(@"
                         SELECT UserID, Email,Password,Salt, Status 
                         From AppUser 
-                        where UserId = @id", new { id = id }) ?? new UserModel();
-            }
+                        where UserId = @id", new { id = id });
+            return result.FirstOrDefault() ?? new UserModel();
+            
         }
 
         /// <summary>
@@ -53,19 +46,11 @@ namespace ResoAdd.DAL
         /// <returns></returns>
         public async Task<int> CreateUser(UserModel userModel)
 		{
-            using (var connection = new NpgsqlConnection(DbHelpper.ConnString))
-            {
-                await connection.OpenAsync();
-
-                string sql = @"insert into AppUser(Email,Password,Salt, Status)
+			string sql = @"insert into AppUser(Email,Password,Salt, Status)
                                     values(@Email, @Password, @Salt, @Status) RETURNING userid";
-
-
-                var res = await connection.QuerySingleAsync<int>(sql, userModel);
-
-                return res;
-
-            }
+            var result = await DbHelpper.QueryAsync<int>(sql, userModel);  
+            return result.First();
+           
         }
     }
 }
