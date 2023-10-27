@@ -85,5 +85,9 @@ namespace ResoAdd.BL.Auth
 			var data = await this.GetSession();
 			await sessionDAL.Lock(data.DbSessionId);
 		}
+		public void ResetSessionCache()
+		{
+			sessionModel = null;
+		}
 	}
 }

@@ -3,9 +3,11 @@ using ResoAdd.BL.Auth;
 using ResoAdd.ViewModels;
 using ResoAdd.ViewMapper;
 using ResoAdd.BL.Execptions;
+using ResoAdd.Middleware;
 
 namespace ResoAdd.Controllers 
 {
+    [SiteNotAuthorizeAttribute()]
     public class RegisterController: Controller
     {
 

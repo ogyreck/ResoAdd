@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ResoAdd.ViewModels;
 using System.Security.Cryptography;
+using static ResoAdd.Middleware.SiteAuthorize;
 
 namespace ResoAdd.Controllers
 {
+	[SiteAuthorize()]
 	public class ProfileController : Controller
 	{
 

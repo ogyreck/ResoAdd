@@ -20,13 +20,14 @@ namespace ResoTest.Helpers
 		protected IAuth _authBL;
 		protected IWebCookie webCookie;
 		protected IUserTokenDAL _userTokenDAL = new UserTokenDAL();
+		protected ICurrentUser currentUser;
 
 
 		public BaseTest() {
 			webCookie = new TestCookie();
 			_dbSession = new DbSession(_dbSessionDAL, webCookie);
 			_authBL = new Auth(_authDAL, _encrypt, _httpContextAccessor, _dbSession,_userTokenDAL,webCookie);
-			
+			currentUser = new CurrentUser(_dbSession, webCookie, _userTokenDAL);
 
 		}
 
